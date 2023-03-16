@@ -1,8 +1,10 @@
-const KeyvRedis = require('@keyv/redis');
+import KeyvRedis from '@keyv/redis';
 
-const redisStore = new KeyvRedis('redis://user:pass@redis:6379');
+const redisStore = process.env.REDIS_SERVER_URL
+    ? new KeyvRedis(process.env.REDIS_SERVER_URL)
+    : new KeyvRedis('redis://user:pass@localhost:6379');
 
-module.exports = {
+export default {
     // Options for the Keyv cache, see https://www.npmjs.com/package/keyv.
     // This is used for storing conversations, and supports additional drivers (conversations are stored in memory by default).
     // Only necessary when using `ChatGPTClient`, or `BingAIClient` in jailbreak mode.
@@ -24,10 +26,10 @@ module.exports = {
             // The default model is `gpt-3.5-turbo`.
             model: 'gpt-3.5-turbo',
             // Set max_tokens here to override the default max_tokens of 1000 for the completion.
-            // max_tokens: 1000,
+            max_tokens: 4096,
         },
         // (Optional) Davinci models have a max context length of 4097 tokens, but you may need to change this for other models.
-        // maxContextTokens: 4097,
+        maxContextTokens: 4096,
         // (Optional) You might want to lower this to save money if using a paid model like `text-davinci-003`.
         // Earlier messages will be dropped until the prompt is within the limit.
         // maxPromptTokens: 3097,
@@ -38,33 +40,33 @@ module.exports = {
         // chatGptLabel: 'Bob',
         // promptPrefix: 'You are Bob, a cowboy in Western times...',
         // A proxy string like "http://<ip>:<port>"
-        proxy: '',
+        proxy: process.env.HTTP_PROXY || '',
         // (Optional) Set to true to enable `console.debug()` logging
         debug: false,
     },
     // Options for the Bing client
     bingAiClient: {
         // Necessary for some people in different countries, e.g. China (https://cn.bing.com)
-        host: '',
+        host: process.env.BINGAI_HOST || '',
         // The "_U" cookie value from bing.com
-        userToken: '',
+        userToken: process.env.BINGAI_USER_TOKEN || '',
         // If the above doesn't work, provide all your cookies as a string instead
-        cookies: '',
+        cookies: process.env.BINGAI_BROWSER_COOKIES || '',
         // A proxy string like "http://<ip>:<port>"
-        proxy: '',
+        proxy: process.env.HTTP_PROXY || '',
         // (Optional) Set to true to enable `console.debug()` logging
         debug: false,
     },
     chatGptBrowserClient: {
         // (Optional) Support for a reverse proxy for the conversation endpoint (private API server).
         // Warning: This will expose your access token to a third party. Consider the risks before using this.
-        reverseProxyUrl: 'https://bypass.churchless.tech/api/conversation',
+        reverseProxyUrl: process.env.OPENAI_BROWSER_REVERSE_PROXY_URL || 'https://bypass.duti.tech/api/conversation',
         // Access token from https://chat.openai.com/api/auth/session
-        accessToken: '',
+        accessToken: process.env.OPENAI_BROWSER_ACCESS_TOKEN || '',
         // Cookies from chat.openai.com (likely not required if using reverse proxy server).
-        cookies: '',
+        cookies: process.env.OPENAI_BROWSER_COOKIES || '',
         // A proxy string like "http://<ip>:<port>"
-        proxy: '',
+        proxy: process.env.HTTP_PROXY || '',
         // (Optional) Set to true to enable `console.debug()` logging
         debug: false,
     },

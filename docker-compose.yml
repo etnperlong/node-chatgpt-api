@@ -1,12 +1,30 @@
 version: '3'
 services:
-  app:
+  api-server:
     build:
       context: .
       dockerfile: ./Dockerfile
     environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=3000
+      - HTTP_PROXY=${HTTP_PROXY}
+      - REDIS_SERVER_URL='redis://redis:6379'
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - BINGAI_HOST='https://www.bing.com'
+      - BINGAI_USER_TOKEN=${BINGAI_USER_TOKEN}
+      - OPENAI_BROWSER_REVERSE_PROXY_URL='https://bypass.duti.tech/api/conversation'
+      - OPENAI_BROWSER_ACCESS_TOKEN=${OPENAI_BROWSER_ACCESS_TOKEN}
+      - OPENAI_BROWSER_COOKIES=${OPENAI_BROWSER_COOKIES}
+      - STORAGE_FILE_PATH='./cache.json'
+    depends_on:
+      - redis
     volumes:
       - ./settings.js:/var/chatgpt-api/settings.js:cached
     ports:
       - '${APP_PORT:-3000}:3000'
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - ./data:/data
+    command: redis-server --appendonly yes
+    restart: always
