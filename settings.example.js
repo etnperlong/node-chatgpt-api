@@ -26,10 +26,10 @@ export default {
             // The default model is `gpt-3.5-turbo`.
             model: 'gpt-3.5-turbo',
             // Set max_tokens here to override the default max_tokens of 1000 for the completion.
-            max_tokens: 4096,
+            max_tokens: 4000,
         },
         // (Optional) Davinci models have a max context length of 4097 tokens, but you may need to change this for other models.
-        maxContextTokens: 4096,
+        maxContextTokens: 4000,
         // (Optional) You might want to lower this to save money if using a paid model like `text-davinci-003`.
         // Earlier messages will be dropped until the prompt is within the limit.
         // maxPromptTokens: 3097,
